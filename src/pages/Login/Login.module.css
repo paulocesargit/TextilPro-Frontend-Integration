@@ -1,0 +1,109 @@
+.login {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+  /*background: var(--cor-fundo);*/
+  background-image: url("../../assets/dona_francisca.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  max-width: 400px;
+
+  padding: 36px;
+  background: #ffffff;
+
+  border: 1px solid #e9e5df;
+  border-radius: 14px;
+}
+
+.formulario img {
+  width: 180px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto 10px;
+}
+
+.formulario h1 {
+  margin: 0;
+  text-align: center;
+  color: var(--cor-secundaria);
+}
+
+.formulario p {
+  margin: 10px 0 28px;
+  text-align: center;
+  color: #252525;
+}
+
+.formulario label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #252525;
+}
+
+.formulario input {
+  padding: 12px;
+  margin-bottom: 20px;
+
+  border: 1px solid #d8d5cf;
+  border-radius: 8px;
+
+  outline-color: var(--cor-principal);
+}
+
+.formulario button {
+  padding: 13px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: var(--cor-principal);
+  color: var(--cor-branco);
+}
+
+.formulario button:hover {
+  opacity: 0.9;
+}
+
+.carregamentoCadastro {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.criarConta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #777777;
+}
+
+.criarConta button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #a0522d;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.criarConta button:hover {
+  text-decoration: underline;
+}

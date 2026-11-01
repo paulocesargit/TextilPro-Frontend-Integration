@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --cor-principal: #a0522d;
+  --cor-secundaria: #1f3a34;
+  --cor-destaque: #d4b894;
+  --cor-neutra: #e6e4dd;
+
+  --cor-fundo: #f5f3ee;
+  --cor-card: #ffffff;
+  --cor-texto: #252525;
+  --cor-texto-secundario: #777777;
+  --cor-branco: #ffffff;
+
+  --cor-borda: #e2ded5;
+  --cor-selecao: #eee9df;
+
+  --cor-sucesso: #3f8062;
+  --cor-alerta: #d97736;
+  --cor-erro: #c74736;
+
+  font-family: Inter, Arial, sans-serif;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+}
+
+:root[data-tema="escuro"] {
+  --cor-principal: #a0522d;
+  --cor-secundaria: #1f3a34;
+  --cor-destaque: #60a5fa;
+  --cor-neutra: #334155;
+
+  --cor-fundo: #0f172a;
+  --cor-card: #1e293b;
+  --cor-texto: #f8fafc;
+  --cor-texto-secundario: #cbd5e1;
+  --cor-branco: #1e293b;
+
+  --cor-borda: #334155;
+  --cor-selecao: #334155;
+
+  --cor-sucesso: #4ade80;
+  --cor-alerta: #fb923c;
+  --cor-erro: #f87171;
+}
+
+:root {
+  --fonte-sistema: "Inter", sans-serif;
+}
+
+:root[data-fonte="inter"] {
+  --fonte-sistema: "Inter", sans-serif;
+}
+
+:root[data-fonte="atkinson"] {
+  --fonte-sistema: "Atkinson Hyperlegible", sans-serif;
+}
+
+:root[data-fonte="lexend"] {
+  --fonte-sistema: "Lexend", sans-serif;
+}
+
+:root {
+  --tamanho-fonte: 16px;
+}
+
+:root[data-tamanho="normal"] {
+  --tamanho-fonte: 16px;
+}
+
+:root[data-tamanho="grande"] {
+  --tamanho-fonte: 18px;
+}
+
+:root[data-tamanho="muito-grande"] {
+  --tamanho-fonte: 20px;
+}
+
+:root[data-tamanho="extra-grande"] {
+  --tamanho-fonte: 22px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--cor-fundo);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--cor-texto);
+  background: var(--cor-fundo);
+  font-family: var(--fonte-sistema);
+  font-size: var(--tamanho-fonte);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

@@ -1,0 +1,68 @@
+.loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f3ee;
+  z-index: 9999;
+}
+
+.conteudo {
+  width: 280px;
+  text-align: center;
+  animation: aparecer 0.4s ease;
+}
+
+.logo {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 20px;
+  object-fit: contain;
+}
+
+.mensagem {
+  margin: 0 0 24px;
+  color: #777777;
+  font-size: 14px;
+}
+
+.barra {
+  width: 100%;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #e6e4dd;
+}
+
+.progresso {
+  width: 40%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #a0522d;
+  animation: carregar 1s ease-in-out infinite;
+}
+
+@keyframes carregar {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

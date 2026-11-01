@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Cacto verde inspirado no Agreste">
+  <title>Cacto do Agreste</title>
+  <g stroke="#102b1c" stroke-linecap="round" stroke-linejoin="round">
+    <!-- left arm -->
+    <path d="M190 390V246c0-35-17-57-39-57s-39 22-39 57v49c0 24 13 39 32 39h17v-35h-9c-6 0-9-4-9-11v-42c0-13 4-20 8-20s8 7 8 20v144Z" fill="#173b25" stroke-width="7"/>
+    <!-- right arm -->
+    <path d="M322 390V273c0-34 17-56 39-56s39 22 39 56v25c0 24-13 39-32 39h-17v-35h9c6 0 9-4 9-11v-18c0-13-4-20-8-20s-8 7-8 20v117Z" fill="#173b25" stroke-width="7"/>
+    <!-- main trunk -->
+    <path d="M218 414V125c0-38 16-62 38-62s38 24 38 62v289Z" fill="#1c482b" stroke-width="8"/>
+    <!-- highlights -->
+    <path d="M235 390V129c0-22 7-39 17-47M252 402V133c0-27 3-44 5-51M319 384V274c0-24 8-42 19-49M176 315v-63c0-19-5-32-12-38" fill="none" stroke="#6c9b4a" stroke-width="8"/>
+    <!-- subtle spines -->
+    <g fill="#d6a04b" stroke="none">
+      <path d="M215 145l-16-7 16 18Z"/><path d="M215 190l-17-7 17 18Z"/><path d="M215 235l-17-7 17 18Z"/><path d="M215 280l-17-7 17 18Z"/><path d="M215 325l-17-7 17 18Z"/>
+      <path d="M297 164l16-7-16 18Z"/><path d="M297 211l16-7-16 18Z"/><path d="M297 258l16-7-16 18Z"/><path d="M297 305l16-7-16 18Z"/><path d="M297 352l16-7-16 18Z"/>
+    </g>
+  </g>
+  <path d="M116 414h280" stroke="#6b3b22" stroke-width="7" stroke-linecap="round"/>
+</svg>

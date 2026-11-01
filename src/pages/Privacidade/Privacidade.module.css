@@ -1,0 +1,121 @@
+.privacidade {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #f5f3ee;
+  box-sizing: border-box;
+}
+
+.conteudo {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.cabecalho {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.cabecalho img {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  margin: 0 auto 20px;
+  object-fit: contain;
+}
+
+.cabecalho h1 {
+  margin: 0 0 12px;
+  color: #1f3a34;
+  font-size: 28px;
+}
+
+.cabecalho p {
+  margin: 0;
+  color: #666666;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.secao {
+  margin-bottom: 28px;
+}
+
+.secao h2 {
+  margin: 0 0 12px;
+  color: #a0522d;
+  font-size: 18px;
+}
+
+.secao p {
+  margin: 0 0 12px;
+  color: #444444;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.secao ul {
+  padding-left: 24px;
+  margin: 12px 0;
+}
+
+.secao li {
+  margin-bottom: 8px;
+  color: #444444;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.rodape {
+  padding-top: 20px;
+  border-top: 1px solid #dddddd;
+  text-align: center;
+}
+
+.rodape p {
+  margin: 0 0 8px;
+  color: #777777;
+  font-size: 12px;
+}
+
+.botaoVoltar {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #a0522d;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botaoVoltar:hover {
+  background-color: #854326;
+}
+
+@media (max-width: 600px) {
+  .privacidade {
+    padding: 16px 12px;
+  }
+
+  .conteudo {
+    padding: 24px 18px;
+  }
+
+  .cabecalho h1 {
+    font-size: 23px;
+  }
+
+  .secao h2 {
+    font-size: 16px;
+  }
+}
