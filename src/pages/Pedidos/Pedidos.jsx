@@ -1,40 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatarValor, formatarData } from "../../utils/formatters";
 import styles from "./Pedidos.module.css";
-
-const pedidosIniciais = [
-  {
-    id: 1001,
-    cliente: "Maria Silva",
-    data: "2026-10-15",
-    valor: 149.9,
-    status: "Pendente",
-  },
-  {
-    id: 1002,
-    cliente: "João Santos",
-    data: "2026-10-15",
-    valor: 289.9,
-    status: "Em andamento",
-  },
-  {
-    id: 1003,
-    cliente: "Ana Oliveira",
-    data: "2026-10-14",
-    valor: 99.9,
-    status: "Concluído",
-  },
-  {
-    id: 1004,
-    cliente: "Pedro Costa",
-    data: "2026-10-14",
-    valor: 219.9,
-    status: "Pendente",
-  },
-];
+import { toast } from "sonner";
+import {
+  listarPedidos,
+  cadastrarPedido as cadastrarPedidoAPI,
+  atualizarPedido as atualizarPedidoAPI,
+  excluirPedido as excluirPedidoAPI,
+} from "../../services/pedidoService.js";
 
 export function Pedidos() {
-  const [pedidos, setPedidos] = useState(pedidosIniciais);
+  const [pedidos, setPedidos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
   const [pesquisa, setPesquisa] = useState("");
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [cliente, setCliente] = useState("");
@@ -42,64 +19,28 @@ export function Pedidos() {
   const [status, setStatus] = useState("Pendente");
   const [pedidoEditando, setPedidoEditando] = useState(null);
 
-  function limparFormulario() {
-    setCliente("");
-    setValor("");
-    setStatus("Pendente");
-    setPedidoEditando(null);
-    setFormularioAberto(false);
-  }
+  useEffect(() => {
+    async function carregarPedidos() {
+      try {
+        const resposta = await listarPedidos();
 
-  function cadastrarPedido(event) {
-    event.preventDefault();
+        if (!Array.isArray(resposta)) {
+          throw new Error("A API não retornou uma lista de pedidos.");
+        }
 
-    const novoPedido = {
-      id: pedidos.length
-        ? Math.max(...pedidos.map((pedido) => pedido.id)) + 1
-        : 1001,
-      cliente,
-      data: new Date().toLocaleDateString("en-CA"),
-      valor: Number(valor),
-      status,
-    };
-
-    setPedidos([...pedidos, novoPedido]);
-    limparFormulario();
-  }
-
-  function editarPedido(pedido) {
-    setPedidoEditando(pedido.id);
-    setCliente(pedido.cliente);
-    setValor(String(pedido.valor));
-    setStatus(pedido.status);
-    setFormularioAberto(true);
-  }
-
-  function salvarPedido(event) {
-    event.preventDefault();
-
-    const pedidosAtualizados = pedidos.map((pedido) => {
-      if (pedido.id === pedidoEditando) {
-        return {
-          ...pedido,
-          cliente,
-          valor: Number(valor),
-          status,
-        };
+        setPedidos(resposta);
+      } catch (erro) {
+        console.error("Erro ao carregar pedidos:", erro);
+        toast.error("Não foi possível carregar os pedidos.", {
+          id: "erro-carregar-pedidos",
+        });
+      } finally {
+        setCarregando(false);
       }
+    }
 
-      return pedido;
-    });
-
-    setPedidos(pedidosAtualizados);
-    limparFormulario();
-  }
-
-  function excluirPedido(id) {
-    const pedidosAtualizados = pedidos.filter((pedido) => pedido.id !== id);
-
-    setPedidos(pedidosAtualizados);
-  }
+    carregarPedidos();
+  }, []);
 
   const pedidosFiltrados = pedidos.filter(
     (pedido) =>
@@ -118,6 +59,85 @@ export function Pedidos() {
   const pedidosConcluidos = pedidos.filter(
     (pedido) => pedido.status === "Concluído",
   ).length;
+
+  function limparFormulario() {
+    setCliente("");
+    setValor("");
+    setStatus("Pendente");
+    setPedidoEditando(null);
+    setFormularioAberto(false);
+  }
+
+  async function handleCadastrarPedido(event) {
+    event.preventDefault();
+
+    const novoPedido = {
+      cliente,
+      data: new Date().toLocaleDateString("en-CA"),
+      valor: Number(valor),
+      status,
+    };
+
+    try {
+      await cadastrarPedidoAPI(novoPedido);
+
+      toast.success("Pedido cadastrado com sucesso!");
+
+      const resposta = await listarPedidos();
+      setPedidos(resposta);
+
+      limparFormulario();
+    } catch (erro) {
+      console.error("Erro ao cadastrar pedido:", erro);
+      toast.error("Não foi possível cadastrar o pedido.");
+    }
+  }
+
+  function editarPedido(pedido) {
+    setPedidoEditando(pedido.id);
+    setCliente(pedido.cliente);
+    setValor(String(pedido.valor));
+    setStatus(pedido.status);
+    setFormularioAberto(true);
+  }
+
+  async function handleSalvarPedido(event) {
+    event.preventDefault();
+
+    const dadosPedido = {
+      cliente,
+      valor: Number(valor),
+      status,
+    };
+
+    try {
+      await atualizarPedidoAPI(pedidoEditando, dadosPedido);
+
+      toast.success("Pedido atualizado com sucesso!");
+
+      const resposta = await listarPedidos();
+      setPedidos(resposta);
+
+      limparFormulario();
+    } catch (erro) {
+      console.error("Erro ao atualizar pedido:", erro);
+      toast.error("Não foi possível atualizar o pedido.");
+    }
+  }
+
+  async function handleExcluirPedido(id) {
+    try {
+      await excluirPedidoAPI(id);
+
+      toast.success("Pedido excluído com sucesso!");
+
+      const resposta = await listarPedidos();
+      setPedidos(resposta);
+    } catch (erro) {
+      console.error("Erro ao excluir pedido:", erro);
+      toast.error("Não foi possível excluir o pedido.");
+    }
+  }
 
   return (
     <main className={styles.pedidos}>
@@ -143,7 +163,11 @@ export function Pedidos() {
         <section className={styles.formulario}>
           <h2>{pedidoEditando ? "Editar pedido" : "Cadastrar pedido"}</h2>
 
-          <form onSubmit={pedidoEditando ? salvarPedido : cadastrarPedido}>
+          <form
+            onSubmit={
+              pedidoEditando ? handleSalvarPedido : handleCadastrarPedido
+            }
+          >
             <div className={styles.camposFormulario}>
               <div className={styles.campo}>
                 <label htmlFor="cliente">Nome do cliente</label>
@@ -298,7 +322,7 @@ export function Pedidos() {
                             "Deseja realmente excluir este pedido?",
                           )
                         ) {
-                          excluirPedido(pedido.id);
+                          handleExcluirPedido(pedido.id);
                         }
                       }}
                     >
@@ -308,7 +332,7 @@ export function Pedidos() {
                 </tr>
               ))}
 
-              {pedidosFiltrados.length === 0 && (
+              {!carregando && pedidosFiltrados.length === 0 && (
                 <tr>
                   <td colSpan="6" className={styles.semResultados}>
                     Nenhum pedido encontrado.

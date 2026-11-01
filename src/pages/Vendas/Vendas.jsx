@@ -31,7 +31,9 @@ export function Vendas() {
         setVendas(Array.isArray(resposta) ? resposta : []);
       } catch (erro) {
         console.log("Backend ainda não conectado.");
-        setVendas([]);
+        toast.error("Não foi possível carregar as vendas.", {
+          id: "erro-carregar-vendas",
+        });
       } finally {
         setCarregando(false);
       }

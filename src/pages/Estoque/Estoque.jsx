@@ -1,41 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatarValor } from "../../utils/formatters";
 import styles from "./Estoque.module.css";
 import { toast } from "sonner";
-
-const produtosIniciais = [
-  {
-    id: 1,
-    nome: "Camisa Básica",
-    categoria: "Camisas",
-    quantidade: 35,
-    preco: 49.9,
-  },
-  {
-    id: 2,
-    nome: "Calça Jeans",
-    categoria: "Calças",
-    quantidade: 12,
-    preco: 89.9,
-  },
-  {
-    id: 3,
-    nome: "Vestido Floral",
-    categoria: "Vestidos",
-    quantidade: 5,
-    preco: 79.9,
-  },
-  {
-    id: 4,
-    nome: "Blusa Cropped",
-    categoria: "Blusas",
-    quantidade: 2,
-    preco: 39.9,
-  },
-];
+import {
+  listarProdutos,
+  cadastrarProduto as cadastrarProdutoAPI,
+  atualizarProduto as atualizarProdutoAPI,
+  excluirProduto as excluirProdutoAPI,
+} from "../../services/produtoService.js";
 
 export function Estoque() {
-  const [produtos, setProdutos] = useState(produtosIniciais);
+  const [produtos, setProdutos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
   const [pesquisa, setPesquisa] = useState("");
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [nome, setNome] = useState("");
@@ -43,6 +19,30 @@ export function Estoque() {
   const [quantidade, setQuantidade] = useState("");
   const [preco, setPreco] = useState("");
   const [produtoEditando, setProdutoEditando] = useState(null);
+
+  useEffect(() => {
+    async function carregarProdutos() {
+      try {
+        const resposta = await listarProdutos();
+
+        if (!Array.isArray(resposta)) {
+          throw new Error("A API não retornou uma lista de produtos.");
+        }
+
+        setProdutos(resposta);
+      } catch (erro) {
+        console.error("Erro ao carregar produtos:", erro);
+
+        toast.error("Não foi possível carregar os produtos.", {
+          id: "erro-carregar-produtos",
+        });
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarProdutos();
+  }, []);
 
   function limparFormulario() {
     setNome("");
@@ -53,22 +53,30 @@ export function Estoque() {
     setFormularioAberto(false);
   }
 
-  function cadastrarProduto(event) {
+  async function handleCadastrarProduto(event) {
     event.preventDefault();
 
     const novoProduto = {
-      id: produtos.length
-        ? Math.max(...produtos.map((produto) => produto.id)) + 1
-        : 1,
       nome,
       categoria,
       quantidade: Number(quantidade),
       preco: Number(preco),
     };
 
-    setProdutos([...produtos, novoProduto]);
-    toast.success("Produto cadastrado com sucesso!");
-    limparFormulario();
+    try {
+      await cadastrarProdutoAPI(novoProduto);
+
+      toast.success("Produto cadastrado com sucesso!");
+
+      const resposta = await listarProdutos();
+      setProdutos(resposta);
+
+      limparFormulario();
+    } catch (erro) {
+      console.error("Erro ao cadastrar produto:", erro);
+
+      toast.error("Não foi possível cadastrar o produto.");
+    }
   }
 
   function editarProduto(produto) {
@@ -80,39 +88,46 @@ export function Estoque() {
     setFormularioAberto(true);
   }
 
-  function salvarProduto(event) {
+  async function handleSalvarProduto(event) {
     event.preventDefault();
 
-    const produtosAtualizados = produtos.map((produto) => {
-      if (produto.id === produtoEditando) {
-        return {
-          ...produto,
-          nome,
-          categoria,
-          quantidade: Number(quantidade),
-          preco: Number(preco),
-        };
-      }
+    const dadosProduto = {
+      nome,
+      categoria,
+      quantidade: Number(quantidade),
+      preco: Number(preco),
+    };
 
-      return produto;
-    });
+    try {
+      await atualizarProdutoAPI(produtoEditando, dadosProduto);
 
-    setProdutos(produtosAtualizados);
-    toast.success("Produto atualizado com sucesso!");
-    limparFormulario();
+      toast.success("Produto atualizado com sucesso!");
+
+      const resposta = await listarProdutos();
+      setProdutos(resposta);
+
+      limparFormulario();
+    } catch (erro) {
+      console.error("Erro ao atualizar produto:", erro);
+
+      toast.error("Não foi possível atualizar o produto.");
+    }
   }
 
-  function excluirProduto(id) {
-    const produtosAtualizados = produtos.filter((produto) => produto.id !== id);
+  async function handleExcluirProduto(id) {
+    try {
+      await excluirProdutoAPI(id);
 
-    setProdutos(produtosAtualizados);
+      toast.success("Produto excluído com sucesso!");
 
-    toast.success("Produto excluído com sucesso!");
+      const resposta = await listarProdutos();
+      setProdutos(resposta);
+    } catch (erro) {
+      console.error("Erro ao excluir produto:", erro);
+
+      toast.error("Não foi possível excluir o produto.");
+    }
   }
-
-  const produtosFiltrados = produtos.filter((produto) =>
-    produto.nome.toLowerCase().includes(pesquisa.toLowerCase()),
-  );
 
   const totalProdutos = produtos.length;
 
@@ -123,6 +138,12 @@ export function Estoque() {
   const estoqueBaixo = produtos.filter(
     (produto) => produto.quantidade <= 5,
   ).length;
+
+  const produtosFiltrados = produtos.filter(
+    (produto) =>
+      produto.nome.toLowerCase().includes(pesquisa.toLowerCase()) ||
+      String(produto.id).includes(pesquisa),
+  );
 
   return (
     <main className={styles.estoque}>
@@ -147,7 +168,11 @@ export function Estoque() {
       {formularioAberto && (
         <section className={styles.formulario}>
           <h2>{produtoEditando ? "Editar produto" : "Cadastrar produto"}</h2>
-          <form onSubmit={produtoEditando ? salvarProduto : cadastrarProduto}>
+          <form
+            onSubmit={
+              produtoEditando ? handleSalvarProduto : handleCadastrarProduto
+            }
+          >
             <div className={styles.camposFormulario}>
               <div className={styles.campo}>
                 <label htmlFor="nome">Nome do produto</label>
@@ -305,7 +330,7 @@ export function Estoque() {
                             "Deseja realmente excluir este produto?",
                           )
                         ) {
-                          excluirProduto(produto.id);
+                          handleExcluirProduto(produto.id);
                         }
                       }}
                     >
@@ -315,7 +340,7 @@ export function Estoque() {
                 </tr>
               ))}
 
-              {produtosFiltrados.length === 0 && (
+              {!carregando && produtosFiltrados.length === 0 && (
                 <tr>
                   <td colSpan="6" className={styles.semResultados}>
                     Nenhum produto encontrado.
