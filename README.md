@@ -1,4 +1,4 @@
-TêxtilPro – Front-end Integration
+# TêxtilPro – Front-end Integration
 
 Este repositório é destinado exclusivamente à preparação e integração do front-end do TêxtilPro com o back-end.
 
