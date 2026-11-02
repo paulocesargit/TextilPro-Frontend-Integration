@@ -11,4 +11,4 @@ O repositório original do front-end será mantido separadamente.
 
 ## Documentação
 
-- [Contrato de Desenvolvimento](./CONTRATO.md)
+[Contrato de Desenvolvimento](./CONTRATO.md)
