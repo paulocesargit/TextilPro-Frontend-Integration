@@ -7,3 +7,7 @@ export async function fazerLogin(dados) {
 export async function fazerCadastro(dados) {
   return await apiPost("/", dados);
 }
+
+export async function sairDaConta() {
+  return await apiPost("/");
+}

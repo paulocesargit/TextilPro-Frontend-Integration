@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import logo from "../../assets/RenderTextilProC.png";
 import { Loading } from "../Loanding/Loading";
+import { sairDaConta } from "../../services/authService.js";
 
 import styles from "./Sidebar.module.css";
 
@@ -37,16 +38,6 @@ const menuItems = [
     caminho: "/pedidos",
     icone: ClipboardList,
   },
-  //  {
-  //    nome: "Comissões",
-  //   caminho: "/comissoes",
-  //  icone: Users,
-  // },
-  //{
-  //  nome: "Relatórios",
-  //   caminho: "/relatorios",
-  //    icone: ChartColumn,
-  // },
   {
     nome: "Configurações",
     caminho: "/configuracoes",
@@ -57,14 +48,20 @@ const menuItems = [
 export function Sidebar() {
   const navigate = useNavigate();
   const [carregando, setCarregando] = useState(false);
-  function sair() {
+
+  async function sair() {
     setCarregando(true);
 
-    setTimeout(() => {
+    try {
+      await sairDaConta();
+    } catch (erro) {
+      console.error("Erro ao encerrar sessão:", erro);
+    } finally {
       localStorage.removeItem("usuario");
       localStorage.removeItem("genero");
+
       navigate("/login");
-    }, 2000);
+    }
   }
 
   if (carregando) {

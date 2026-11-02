@@ -13,6 +13,11 @@ import {
   Save,
 } from "lucide-react";
 
+import {
+  obterUsuario,
+  atualizarConta,
+} from "../../services/configuracaoService.js";
+
 import { toast } from "sonner";
 
 import { Creditos } from "../../components/Creditos/Creditos.jsx";
@@ -42,20 +47,8 @@ export function Configuracoes() {
     return aparencia.tamanhoFonte || "normal";
   });
 
-  const [empresa, setEmpresa] = useState(() => {
-    return (
-      JSON.parse(localStorage.getItem("dadosEmpresa")) || {
-        nome: "",
-        cnpj: "",
-        telefone: "",
-        email: "",
-        cidade: "",
-        estado: "",
-      }
-    );
-  });
-
-  const [usuario, setUsuario] = useState(localStorage.getItem("usuario") || "");
+  const [usuario, setUsuario] = useState("");
+  const [carregando, setCarregando] = useState(true);
 
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
@@ -81,24 +74,25 @@ export function Configuracoes() {
     document.documentElement.setAttribute("data-tamanho", novoTamanho);
   }
 
-  function atualizarEmpresa(event) {
-    const { name, value } = event.target;
+  useEffect(() => {
+    async function carregarUsuario() {
+      try {
+        const dadosUsuario = await obterUsuario();
 
-    setEmpresa((dadosAtuais) => ({
-      ...dadosAtuais,
-      [name]: value,
-    }));
-  }
+        setUsuario(dadosUsuario.usuario || "");
+      } catch (erro) {
+        console.error("Erro ao carregar os dados do usuário:", erro);
 
-  function salvarEmpresa(event) {
-    event.preventDefault();
+        toast.error("Não foi possível carregar os dados da conta.", {
+          id: "erro-carregar-usuario",
+        });
+      }
+    }
 
-    localStorage.setItem("dadosEmpresa", JSON.stringify(empresa));
+    carregarUsuario();
+  }, []);
 
-    toast.success("Dados da empresa salvos com sucesso!");
-  }
-
-  function salvarConta(event) {
+  async function salvarConta(event) {
     event.preventDefault();
 
     if (!senhaAtual) {
@@ -106,35 +100,8 @@ export function Configuracoes() {
       return;
     }
 
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-    const indiceUsuario = usuarios.findIndex(
-      (item) => item.usuario === localStorage.getItem("usuario"),
-    );
-
-    if (indiceUsuario === -1) {
-      toast.error("Não foi possível encontrar sua conta.");
-      return;
-    }
-
-    const contaAtual = usuarios[indiceUsuario];
-
-    if (contaAtual.senha !== senhaAtual) {
-      toast.error("A senha atual está incorreta.");
-      return;
-    }
-
-    const usuarioExiste = usuarios.some(
-      (item, indice) => indice !== indiceUsuario && item.usuario === usuario,
-    );
-
     if (!usuario.trim()) {
       toast.warning("Digite um nome de usuário.");
-      return;
-    }
-
-    if (usuarioExiste) {
-      toast.warning("Esse nome de usuário já está em uso.");
       return;
     }
 
@@ -153,22 +120,35 @@ export function Configuracoes() {
         toast.warning("A nova senha deve ser diferente da atual.");
         return;
       }
-
-      contaAtual.senha = novaSenha;
     }
 
-    contaAtual.usuario = usuario.trim();
+    const dadosConta = {
+      usuario: usuario.trim(),
+      senhaAtual,
+      novaSenha: novaSenha || undefined,
+    };
 
-    usuarios[indiceUsuario] = contaAtual;
+    try {
+      const resposta = await atualizarConta(dadosConta);
 
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-    localStorage.setItem("usuario", usuario.trim());
+      const usuarioAtualizado = resposta.usuario || usuario.trim();
 
-    setSenhaAtual("");
-    setNovaSenha("");
-    setConfirmarSenha("");
+      setUsuario(usuarioAtualizado);
 
-    toast.success("Dados da conta atualizados com sucesso!");
+      localStorage.setItem("usuario", usuarioAtualizado);
+
+      setSenhaAtual("");
+      setNovaSenha("");
+      setConfirmarSenha("");
+
+      toast.success("Dados da conta atualizados com sucesso!");
+    } catch (erro) {
+      console.error("Erro ao atualizar a conta:", erro);
+
+      toast.error(
+        erro.response?.data?.message || "Não foi possível atualizar sua conta.",
+      );
+    }
   }
 
   function salvarAparencia() {
