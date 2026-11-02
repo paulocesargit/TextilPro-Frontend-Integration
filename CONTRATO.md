@@ -2,12 +2,10 @@
 
 ## 1. Configuração da API
 
-- [ ] Definir a URL oficial do backend.
-- [ ] Confirmar se a API utilizará JSON nas requisições e respostas.
 - [ ] Padronizar os códigos HTTP de resposta.
 - [ ] Definir o formato das mensagens de erro.
 - [ ] Definir como será feita a autenticação.
-- [ ] Confirmar se será utilizado JWT ou sessão.
+- [ ] Definir o mecanismo de autenticação (JWT ou sessão).
 
 **Frontend:** `src/services/api.js`
 
