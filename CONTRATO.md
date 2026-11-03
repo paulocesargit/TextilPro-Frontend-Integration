@@ -65,7 +65,7 @@
 - [ ] Dar baixa no estoque automaticamente.
 - [ ] Reverter a movimentação do estoque quando uma venda for cancelada ou excluída, conforme a regra definida.
 
-**Atenção:** o cálculo financeiro e a atualização do estoque devem ser validados pelo backend, não apenas pelo React.
+**Atenção:** o cálculo financeiro e a atualização do estoque devem ser validados pelo backend, não apenas pelo Front...
 
 ## 5. Pedidos
 
@@ -133,8 +133,6 @@ As preferências de aparência não precisam de endpoints:
 - [ ] Tamanho da fonte: LocalStorage.
 
 ## 8. Banco de dados — PostgreSQL / Supabase
-
-A equipe responsável pelo banco deverá garantir os relacionamentos necessários.
 
 **Entidades principais sugeridas:**
 
